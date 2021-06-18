@@ -1,0 +1,12 @@
+area,humidity
+seoul,62
+incheon,83
+suwon,80
+donghae,41
+daejeon,71
+ulsan,49
+daegu,8.5
+hadong,.
+busan,7.5
+jaeju,9.5
+masan,NA

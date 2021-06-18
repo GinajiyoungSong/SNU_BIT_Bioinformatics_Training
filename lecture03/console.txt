@@ -1,0 +1,782 @@
+
+R version 4.1.0 (2021-05-18) -- "Camp Pontanezen"
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+Not all characters in C:/Users/SJY/Documents/유전체 분석과정/lecture03/._lecture03.R could be decoded using CP949. To try a different encoding, choose "File | Reopen with Encoding..." from the main menu.> library(MASS)
+> library(MASS)
+> attach(Pima.tr)
+> shapiro.test(bmi)
+
+	Shapiro-Wilk normality test
+
+data:  bmi
+W = 0.99104, p-value = 0.2523
+
+> qqnorm(bmi)
+> qqline(bmi)
+> t.test(bmi, mu=30)
+
+	One Sample t-test
+
+data:  bmi
+t = 5.3291, df = 199, p-value = 2.661e-07
+alternative hypothesis: true mean is not equal to 30
+95 percent confidence interval:
+ 31.45521 33.16479
+sample estimates:
+mean of x 
+    32.31 
+
+> bmi.ttest <- t.test(bmi, mu=30)
+> names(bmi.ttest)
+ [1] "statistic"   "parameter"   "p.value"     "conf.int"   
+ [5] "estimate"    "null.value"  "stderr"      "alternative"
+ [9] "method"      "data.name"  
+> bmi.ttest$p.value
+[1] 2.661441e-07
+> t.test(bmi, mu=30, alternative="greater")
+
+	One Sample t-test
+
+data:  bmi
+t = 5.3291, df = 199, p-value = 1.331e-07
+alternative hypothesis: true mean is greater than 30
+95 percent confidence interval:
+ 31.59367      Inf
+sample estimates:
+mean of x 
+    32.31 
+
+> t.test(bmi, mu=30, alternative="less")
+
+	One Sample t-test
+
+data:  bmi
+t = 5.3291, df = 199, p-value = 1
+alternative hypothesis: true mean is less than 30
+95 percent confidence interval:
+     -Inf 33.02633
+sample estimates:
+mean of x 
+    32.31 
+
+> var.test(bmi ~ type)
+
+	F test to compare two variances
+
+data:  bmi by type
+F = 1.7595, num df = 131, denom df = 67, p-value = 0.01115
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+ 1.140466 2.637564
+sample estimates:
+ratio of variances 
+           1.75945 
+
+> t.test(bmi ~ type)
+
+	Welch Two Sample t-test
+
+data:  bmi by type
+t = -4.512, df = 171.46, p-value = 1.188e-05
+alternative hypothesis: true difference in means between group No and group Yes is not equal to 0
+95 percent confidence interval:
+ -5.224615 -2.044547
+sample estimates:
+ mean in group No mean in group Yes 
+         31.07424          34.70882 
+
+> FT <- subset(anorexia, Treat=="FT")
+> head(FT)
+   Treat Prewt Postwt
+56    FT  83.8   95.2
+57    FT  83.3   94.3
+58    FT  86.0   91.5
+59    FT  82.5   91.9
+60    FT  86.7  100.3
+61    FT  79.6   76.7
+> shapiro.test(FT$Prewt - FT$Postwt)
+
+	Shapiro-Wilk normality test
+
+data:  FT$Prewt - FT$Postwt
+W = 0.95358, p-value = 0.5156
+
+> t.test(FT$Prewt, FT$Postwt, paired=TRUE)
+
+	Paired t-test
+
+data:  FT$Prewt and FT$Postwt
+t = -4.1849, df = 16, p-value = 0.0007003
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -10.94471  -3.58470
+sample estimates:
+mean of the differences 
+              -7.264706 
+
+> CBT <- subset(anorexia, Treat='CBT')
+> shapiro.test(CBT$Prewt - CBT$Postwt)
+
+	Shapiro-Wilk normality test
+
+data:  CBT$Prewt - CBT$Postwt
+W = 0.97466, p-value = 0.1544
+
+> head(anorexia)
+  Treat Prewt Postwt
+1  Cont  80.7   80.2
+2  Cont  89.4   80.1
+3  Cont  91.8   86.4
+4  Cont  74.0   86.3
+5  Cont  78.1   76.1
+6  Cont  88.3   78.1
+> head(unique(anorexia))
+  Treat Prewt Postwt
+1  Cont  80.7   80.2
+2  Cont  89.4   80.1
+3  Cont  91.8   86.4
+4  Cont  74.0   86.3
+5  Cont  78.1   76.1
+6  Cont  88.3   78.1
+> head(unique(anorexia$Treat))
+[1] Cont CBT  FT  
+Levels: CBT Cont FT
+> dim(CBT)
+[1] 72  3
+> dim(anorexia)
+[1] 72  3
+> CBT <- subset(anorexia, Treat='CBT')
+> CBT
+   Treat Prewt Postwt
+1   Cont  80.7   80.2
+2   Cont  89.4   80.1
+3   Cont  91.8   86.4
+4   Cont  74.0   86.3
+5   Cont  78.1   76.1
+6   Cont  88.3   78.1
+7   Cont  87.3   75.1
+8   Cont  75.1   86.7
+9   Cont  80.6   73.5
+10  Cont  78.4   84.6
+11  Cont  77.6   77.4
+12  Cont  88.7   79.5
+13  Cont  81.3   89.6
+14  Cont  78.1   81.4
+15  Cont  70.5   81.8
+16  Cont  77.3   77.3
+17  Cont  85.2   84.2
+18  Cont  86.0   75.4
+19  Cont  84.1   79.5
+20  Cont  79.7   73.0
+21  Cont  85.5   88.3
+22  Cont  84.4   84.7
+23  Cont  79.6   81.4
+24  Cont  77.5   81.2
+25  Cont  72.3   88.2
+26  Cont  89.0   78.8
+27   CBT  80.5   82.2
+28   CBT  84.9   85.6
+29   CBT  81.5   81.4
+30   CBT  82.6   81.9
+31   CBT  79.9   76.4
+32   CBT  88.7  103.6
+33   CBT  94.9   98.4
+34   CBT  76.3   93.4
+35   CBT  81.0   73.4
+36   CBT  80.5   82.1
+37   CBT  85.0   96.7
+38   CBT  89.2   95.3
+39   CBT  81.3   82.4
+40   CBT  76.5   72.5
+41   CBT  70.0   90.9
+42   CBT  80.4   71.3
+43   CBT  83.3   85.4
+44   CBT  83.0   81.6
+45   CBT  87.7   89.1
+46   CBT  84.2   83.9
+47   CBT  86.4   82.7
+48   CBT  76.5   75.7
+49   CBT  80.2   82.6
+50   CBT  87.8  100.4
+51   CBT  83.3   85.2
+52   CBT  79.7   83.6
+53   CBT  84.5   84.6
+54   CBT  80.8   96.2
+55   CBT  87.4   86.7
+56    FT  83.8   95.2
+57    FT  83.3   94.3
+58    FT  86.0   91.5
+59    FT  82.5   91.9
+60    FT  86.7  100.3
+61    FT  79.6   76.7
+62    FT  76.9   76.8
+63    FT  94.2  101.6
+64    FT  73.4   94.9
+65    FT  80.5   75.2
+66    FT  81.6   77.8
+67    FT  82.1   95.5
+68    FT  77.6   90.7
+69    FT  83.5   92.5
+70    FT  89.9   93.8
+71    FT  86.0   91.7
+72    FT  87.3   98.0
+> CBT <- subset(anorexia, Treat=='CBT')
+> CBT
+   Treat Prewt Postwt
+27   CBT  80.5   82.2
+28   CBT  84.9   85.6
+29   CBT  81.5   81.4
+30   CBT  82.6   81.9
+31   CBT  79.9   76.4
+32   CBT  88.7  103.6
+33   CBT  94.9   98.4
+34   CBT  76.3   93.4
+35   CBT  81.0   73.4
+36   CBT  80.5   82.1
+37   CBT  85.0   96.7
+38   CBT  89.2   95.3
+39   CBT  81.3   82.4
+40   CBT  76.5   72.5
+41   CBT  70.0   90.9
+42   CBT  80.4   71.3
+43   CBT  83.3   85.4
+44   CBT  83.0   81.6
+45   CBT  87.7   89.1
+46   CBT  84.2   83.9
+47   CBT  86.4   82.7
+48   CBT  76.5   75.7
+49   CBT  80.2   82.6
+50   CBT  87.8  100.4
+51   CBT  83.3   85.2
+52   CBT  79.7   83.6
+53   CBT  84.5   84.6
+54   CBT  80.8   96.2
+55   CBT  87.4   86.7
+> dim(CBT)
+[1] 29  3
+> shapiro.test(CBT$Prewt - CBT$Postwt)
+
+	Shapiro-Wilk normality test
+
+data:  CBT$Prewt - CBT$Postwt
+W = 0.89618, p-value = 0.007945
+
+> wilcox.test(CBT$Prewt, CBT$Postwt, paired=TRUE)
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  CBT$Prewt and CBT$Postwt
+V = 131.5, p-value = 0.06447
+alternative hypothesis: true location shift is not equal to 0
+
+Warning message:
+In wilcox.test.default(CBT$Prewt, CBT$Postwt, paired = TRUE) :
+  cannot compute exact p-value with ties
+> wilcox.test(CBT$Prewt, CBT$Postwt, paired=TRUE, exact=FALSE)
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  CBT$Prewt and CBT$Postwt
+V = 131.5, p-value = 0.06447
+alternative hypothesis: true location shift is not equal to 0
+
+> placebo <- c(7, 5, 6, 4, 12)
+> new_drug <- c(3, 6, 4, 2, 1)
+> new_drug <- c(3, 6, 4, 2, 1)
+> wilcox.test(placebo, new_drug, exact=FALSE)
+
+	Wilcoxon rank sum test with continuity correction
+
+data:  placebo and new_drug
+W = 22, p-value = 0.05855
+alternative hypothesis: true location shift is not equal to 0
+
+> attach(iris)
+> cor(Sepal.Length, Petal.Width)
+[1] 0.8179411
+> dim(iris)
+[1] 150   5
+> cor.test(Sepal.Length, Petal.Width)
+
+	Pearson's product-moment correlation
+
+data:  Sepal.Length and Petal.Width
+t = 17.296, df = 148, p-value < 2.2e-16
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.7568971 0.8648361
+sample estimates:
+      cor 
+0.8179411 
+
+> 
+> 
+> 
+> cor(iris[,1:4])
+             Sepal.Length Sepal.Width Petal.Length Petal.Width
+Sepal.Length    1.0000000  -0.1175698    0.8717538   0.8179411
+Sepal.Width    -0.1175698   1.0000000   -0.4284401  -0.3661259
+Petal.Length    0.8717538  -0.4284401    1.0000000   0.9628654
+Petal.Width     0.8179411  -0.3661259    0.9628654   1.0000000
+> pairs(iris[, 1:4])
+> 
+> 
+> install.packages("Hmisc")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+‘C:/Users/SJY/Documents/R/win-library/4.1’의 위치에 패키지(들)을 설치합니다.
+(왜냐하면 ‘lib’가 지정되지 않았기 때문입니다)
+‘colorspace’, ‘cli’, ‘crayon’, ‘utf8’, ‘farver’, ‘labeling’, ‘lifecycle’, ‘munsell’, ‘ellipsis’, ‘fansi’, ‘pillar’, ‘pkgconfig’, ‘vctrs’, ‘stringi’, ‘evaluate’, ‘highr’, ‘markdown’, ‘yaml’, ‘xfun’, ‘backports’, ‘digest’, ‘glue’, ‘isoband’, ‘rlang’, ‘scales’, ‘tibble’, ‘withr’, ‘png’, ‘jpeg’, ‘RColorBrewer’, ‘stringr’, ‘knitr’, ‘magrittr’, ‘checkmate’, ‘htmlwidgets’, ‘rstudioapi’, ‘viridisLite’, ‘Formula’, ‘ggplot2’, ‘latticeExtra’, ‘gtable’, ‘gridExtra’, ‘data.table’, ‘htmlTable’, ‘viridis’, ‘htmltools’, ‘base64enc’(들)을 또한 설치합니다.
+
+
+  There is a binary version available but the source version is later:
+        binary source needs_compilation
+stringi  1.6.1  1.6.2              TRUE
+
+  Binaries will be installed
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/colorspace_2.0-1.zip'
+Content type 'application/zip' length 2640934 bytes (2.5 MB)
+downloaded 2.5 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/cli_2.5.0.zip'
+Content type 'application/zip' length 533351 bytes (520 KB)
+downloaded 520 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/crayon_1.4.1.zip'
+Content type 'application/zip' length 141463 bytes (138 KB)
+downloaded 138 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/utf8_1.2.1.zip'
+Content type 'application/zip' length 209849 bytes (204 KB)
+downloaded 204 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/farver_2.1.0.zip'
+Content type 'application/zip' length 1752105 bytes (1.7 MB)
+downloaded 1.7 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/labeling_0.4.2.zip'
+Content type 'application/zip' length 62808 bytes (61 KB)
+downloaded 61 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/lifecycle_1.0.0.zip'
+Content type 'application/zip' length 111130 bytes (108 KB)
+downloaded 108 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/munsell_0.5.0.zip'
+Content type 'application/zip' length 244972 bytes (239 KB)
+downloaded 239 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/ellipsis_0.3.2.zip'
+Content type 'application/zip' length 49157 bytes (48 KB)
+downloaded 48 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/fansi_0.5.0.zip'
+Content type 'application/zip' length 248495 bytes (242 KB)
+downloaded 242 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/pillar_1.6.1.zip'
+Content type 'application/zip' length 1025841 bytes (1001 KB)
+downloaded 1001 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/pkgconfig_2.0.3.zip'
+Content type 'application/zip' length 22441 bytes (21 KB)
+downloaded 21 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/vctrs_0.3.8.zip'
+Content type 'application/zip' length 1252538 bytes (1.2 MB)
+downloaded 1.2 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/stringi_1.6.1.zip'
+Content type 'application/zip' length 16348895 bytes (15.6 MB)
+downloaded 15.6 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/evaluate_0.14.zip'
+Content type 'application/zip' length 76708 bytes (74 KB)
+downloaded 74 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/highr_0.9.zip'
+Content type 'application/zip' length 46594 bytes (45 KB)
+downloaded 45 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/markdown_1.1.zip'
+Content type 'application/zip' length 188671 bytes (184 KB)
+downloaded 184 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/yaml_2.2.1.zip'
+Content type 'application/zip' length 207808 bytes (202 KB)
+downloaded 202 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/xfun_0.23.zip'
+Content type 'application/zip' length 352604 bytes (344 KB)
+downloaded 344 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/backports_1.2.1.zip'
+Content type 'application/zip' length 98734 bytes (96 KB)
+downloaded 96 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/digest_0.6.27.zip'
+Content type 'application/zip' length 268521 bytes (262 KB)
+downloaded 262 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/glue_1.4.2.zip'
+Content type 'application/zip' length 154925 bytes (151 KB)
+downloaded 151 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/isoband_0.2.4.zip'
+Content type 'application/zip' length 3062282 bytes (2.9 MB)
+downloaded 2.9 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/rlang_0.4.11.zip'
+Content type 'application/zip' length 1192294 bytes (1.1 MB)
+downloaded 1.1 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/scales_1.1.1.zip'
+Content type 'application/zip' length 563213 bytes (550 KB)
+downloaded 550 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/tibble_3.1.2.zip'
+Content type 'application/zip' length 824794 bytes (805 KB)
+downloaded 805 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/withr_2.4.2.zip'
+Content type 'application/zip' length 212914 bytes (207 KB)
+downloaded 207 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/png_0.1-7.zip'
+Content type 'application/zip' length 336705 bytes (328 KB)
+downloaded 328 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/jpeg_0.1-8.1.zip'
+Content type 'application/zip' length 335157 bytes (327 KB)
+downloaded 327 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/RColorBrewer_1.1-2.zip'
+Content type 'application/zip' length 55593 bytes (54 KB)
+downloaded 54 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/stringr_1.4.0.zip'
+Content type 'application/zip' length 216935 bytes (211 KB)
+downloaded 211 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/knitr_1.33.zip'
+Content type 'application/zip' length 1459282 bytes (1.4 MB)
+downloaded 1.4 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/magrittr_2.0.1.zip'
+Content type 'application/zip' length 236064 bytes (230 KB)
+downloaded 230 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/checkmate_2.0.0.zip'
+Content type 'application/zip' length 697963 bytes (681 KB)
+downloaded 681 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/htmlwidgets_1.5.3.zip'
+Content type 'application/zip' length 278403 bytes (271 KB)
+downloaded 271 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/rstudioapi_0.13.zip'
+Content type 'application/zip' length 301812 bytes (294 KB)
+downloaded 294 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/viridisLite_0.4.0.zip'
+Content type 'application/zip' length 1299475 bytes (1.2 MB)
+downloaded 1.2 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/Formula_1.2-4.zip'
+Content type 'application/zip' length 177554 bytes (173 KB)
+downloaded 173 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/ggplot2_3.3.3.zip'
+Content type 'application/zip' length 4070136 bytes (3.9 MB)
+downloaded 3.9 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/latticeExtra_0.6-29.zip'
+Content type 'application/zip' length 2202067 bytes (2.1 MB)
+downloaded 2.1 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/gtable_0.3.0.zip'
+Content type 'application/zip' length 434074 bytes (423 KB)
+downloaded 423 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/gridExtra_2.3.zip'
+Content type 'application/zip' length 1109390 bytes (1.1 MB)
+downloaded 1.1 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/data.table_1.14.0.zip'
+Content type 'application/zip' length 2602612 bytes (2.5 MB)
+downloaded 2.5 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/htmlTable_2.2.1.zip'
+Content type 'application/zip' length 407541 bytes (397 KB)
+downloaded 397 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/viridis_0.6.1.zip'
+Content type 'application/zip' length 3023054 bytes (2.9 MB)
+downloaded 2.9 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/htmltools_0.5.1.1.zip'
+Content type 'application/zip' length 243695 bytes (237 KB)
+downloaded 237 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/base64enc_0.1-3.zip'
+Content type 'application/zip' length 43002 bytes (41 KB)
+downloaded 41 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/Hmisc_4.5-0.zip'
+Content type 'application/zip' length 3248430 bytes (3.1 MB)
+downloaded 3.1 MB
+
+package ‘colorspace’ successfully unpacked and MD5 sums checked
+package ‘cli’ successfully unpacked and MD5 sums checked
+package ‘crayon’ successfully unpacked and MD5 sums checked
+package ‘utf8’ successfully unpacked and MD5 sums checked
+package ‘farver’ successfully unpacked and MD5 sums checked
+package ‘labeling’ successfully unpacked and MD5 sums checked
+package ‘lifecycle’ successfully unpacked and MD5 sums checked
+package ‘munsell’ successfully unpacked and MD5 sums checked
+package ‘ellipsis’ successfully unpacked and MD5 sums checked
+package ‘fansi’ successfully unpacked and MD5 sums checked
+package ‘pillar’ successfully unpacked and MD5 sums checked
+package ‘pkgconfig’ successfully unpacked and MD5 sums checked
+package ‘vctrs’ successfully unpacked and MD5 sums checked
+package ‘stringi’ successfully unpacked and MD5 sums checked
+package ‘evaluate’ successfully unpacked and MD5 sums checked
+package ‘highr’ successfully unpacked and MD5 sums checked
+package ‘markdown’ successfully unpacked and MD5 sums checked
+package ‘yaml’ successfully unpacked and MD5 sums checked
+package ‘xfun’ successfully unpacked and MD5 sums checked
+package ‘backports’ successfully unpacked and MD5 sums checked
+package ‘digest’ successfully unpacked and MD5 sums checked
+package ‘glue’ successfully unpacked and MD5 sums checked
+package ‘isoband’ successfully unpacked and MD5 sums checked
+package ‘rlang’ successfully unpacked and MD5 sums checked
+package ‘scales’ successfully unpacked and MD5 sums checked
+package ‘tibble’ successfully unpacked and MD5 sums checked
+package ‘withr’ successfully unpacked and MD5 sums checked
+package ‘png’ successfully unpacked and MD5 sums checked
+package ‘jpeg’ successfully unpacked and MD5 sums checked
+package ‘RColorBrewer’ successfully unpacked and MD5 sums checked
+package ‘stringr’ successfully unpacked and MD5 sums checked
+package ‘knitr’ successfully unpacked and MD5 sums checked
+package ‘magrittr’ successfully unpacked and MD5 sums checked
+package ‘checkmate’ successfully unpacked and MD5 sums checked
+package ‘htmlwidgets’ successfully unpacked and MD5 sums checked
+package ‘rstudioapi’ successfully unpacked and MD5 sums checked
+package ‘viridisLite’ successfully unpacked and MD5 sums checked
+package ‘Formula’ successfully unpacked and MD5 sums checked
+package ‘ggplot2’ successfully unpacked and MD5 sums checked
+package ‘latticeExtra’ successfully unpacked and MD5 sums checked
+package ‘gtable’ successfully unpacked and MD5 sums checked
+package ‘gridExtra’ successfully unpacked and MD5 sums checked
+package ‘data.table’ successfully unpacked and MD5 sums checked
+package ‘htmlTable’ successfully unpacked and MD5 sums checked
+package ‘viridis’ successfully unpacked and MD5 sums checked
+package ‘htmltools’ successfully unpacked and MD5 sums checked
+package ‘base64enc’ successfully unpacked and MD5 sums checked
+package ‘Hmisc’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\SJY\AppData\Local\Temp\RtmpK6HvOv\downloaded_packages
+> library(Gmisc)
+Error in library(Gmisc) : ‘Gmisc’이라고 불리는 패키지가 없습니다
+> library(Hmisc)
+필요한 패키지를 로딩중입니다: lattice
+필요한 패키지를 로딩중입니다: survival
+필요한 패키지를 로딩중입니다: Formula
+필요한 패키지를 로딩중입니다: ggplot2
+Keep up to date with changes at https://www.tidyverse.org/blog/
+
+다음의 패키지를 부착합니다: ‘Hmisc’
+
+The following objects are masked from ‘package:base’:
+
+    format.pval, units
+
+> rcorr(as.matrix(iris[,1:4]))
+             Sepal.Length Sepal.Width Petal.Length Petal.Width
+Sepal.Length         1.00       -0.12         0.87        0.82
+Sepal.Width         -0.12        1.00        -0.43       -0.37
+Petal.Length         0.87       -0.43         1.00        0.96
+Petal.Width          0.82       -0.37         0.96        1.00
+
+n= 150 
+
+
+P
+             Sepal.Length Sepal.Width Petal.Length Petal.Width
+Sepal.Length              0.1519      0.0000       0.0000     
+Sepal.Width  0.1519                   0.0000       0.0000     
+Petal.Length 0.0000       0.0000                   0.0000     
+Petal.Width  0.0000       0.0000      0.0000                  
+> iris.na.test < ireis[,1:4]
+Error: object 'iris.na.test' not found
+> iris.na.test <- ireis[,1:4]
+Error: object 'ireis' not found
+> iris.na.test <- iris[,1:4]
+> iris.na.test[1,1] <- NA
+> iris.na.test[3,2] <- NA
+> iris.na.test[4,3] <- NA
+> head(iris.na.test)
+  Sepal.Length Sepal.Width Petal.Length Petal.Width
+1           NA         3.5          1.4         0.2
+2          4.9         3.0          1.4         0.2
+3          4.7          NA          1.3         0.2
+4          4.6         3.1           NA         0.2
+5          5.0         3.6          1.4         0.2
+6          5.4         3.9          1.7         0.4
+> cor(iris.na.test)
+             Sepal.Length Sepal.Width Petal.Length Petal.Width
+Sepal.Length            1          NA           NA          NA
+Sepal.Width            NA           1           NA          NA
+Petal.Length           NA          NA            1          NA
+Petal.Width            NA          NA           NA           1
+> cor(iris.na.test, use="complete.obs")
+             Sepal.Length Sepal.Width Petal.Length Petal.Width
+Sepal.Length    1.0000000  -0.1094799    0.8678973   0.8121441
+Sepal.Width    -0.1094799   1.0000000   -0.4246671  -0.3610068
+Petal.Length    0.8678973  -0.4246671    1.0000000   0.9615075
+Petal.Width     0.8121441  -0.3610068    0.9615075   1.0000000
+> doctorA <- c(4,1,3,2,6,5,8,7)
+> doctorB <- c(5,3,1,2,6,4,7,8)
+> cor.test(doctorA, doctorB, method="spearman")
+
+	Spearman's rank correlation rho
+
+data:  doctorA and doctorB
+S = 12, p-value = 0.01071
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.8571429 
+
+> newTest <- c(50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100)
+> standardTest <- c(61, 61, 59, 71, 80, 76, 90, 106, 98, 100, 114)
+> dat <- data.frame(newTest, standardTest)
+> lot(standardTest ~ newTest, data=dat, xlim=c(0, 110), ylim=c(0, 120))
+Error in lot(standardTest ~ newTest, data = dat, xlim = c(0, 110), ylim = c(0,  : 
+  could not find function "lot"
+> plot(standardTest ~ newTest, data=dat, xlim=c(0, 110), ylim=c(0, 120))
+> dat.lm <- lm(standardTest ~ newTest, data=dat.lm)
+Error in is.data.frame(data) : object 'dat.lm' not found
+> dat.lm <- lm(standardTest ~ newTest, data=dat)
+> dat.lm
+
+Call:
+lm(formula = standardTest ~ newTest, data = dat)
+
+Coefficients:
+(Intercept)      newTest  
+     -1.000        1.124  
+
+> summary(dat.lm)
+
+Call:
+lm(formula = standardTest ~ newTest, data = dat)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-7.418 -3.936  0.200  2.491 11.491 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  -1.0000     8.7988  -0.114    0.912    
+newTest       1.1236     0.1148   9.788 4.27e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 6.02 on 9 degrees of freedom
+Multiple R-squared:  0.9141,	Adjusted R-squared:  0.9046 
+F-statistic: 95.81 on 1 and 9 DF,  p-value: 4.275e-06
+
+> abline(dat.lm, col="red")
+> coef(dat.lm)
+(Intercept)     newTest 
+  -1.000000    1.123636 
+> coef(dat.lm)[1]
+(Intercept) 
+         -1 
+> coef(dat.lm)[2]
+ newTest 
+1.123636 
+> predict(dat.lm, newdata=data.frame(newTest=80))
+       1 
+88.89091 
+> plot(dat)
+> par(mfrow=c(1,2))
+> pp <- predict(dat.lm, interval="prediction", newdata=dat)
+> matlines(dat$newTest, pp, lty=c(1,2,3), col="blue")
+> pc <-predict( dat.lm, interval = "confidence", newdata = dat)
+> matlines( dat$newTest, pc, lty=c(1,2,3), col="red")
+> install.packages(lmtest)
+Error in install.packages : object 'lmtest' not found
+> install.packages(lmtest)
+Error in install.packages : object 'lmtest' not found
+> par(mfrow=c(1,2))
+> plot(resid(dat.lm))
+> abline(1, 0, col="red")
+> qqnorm(resid(dat.lm))
+> qqline(resid(dat.lm), col="red")
+> shapiro.test(resid(dat.lm))
+
+	Shapiro-Wilk normality test
+
+data:  resid(dat.lm)
+W = 0.95129, p-value = 0.6604
+
+> library(lmtest)
+Error in library(lmtest) : ‘lmtest’이라고 불리는 패키지가 없습니다
+> dwtest(standardTest ~ newTest, data=dat)
+Error in dwtest(standardTest ~ newTest, data = dat) : 
+  could not find function "dwtest"
+> install.packages("lmtest")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+‘C:/Users/SJY/Documents/R/win-library/4.1’의 위치에 패키지(들)을 설치합니다.
+(왜냐하면 ‘lib’가 지정되지 않았기 때문입니다)
+‘zoo’(들)을 또한 설치합니다.
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/zoo_1.8-9.zip'
+Content type 'application/zip' length 1038811 bytes (1014 KB)
+downloaded 1014 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/lmtest_0.9-38.zip'
+Content type 'application/zip' length 411823 bytes (402 KB)
+downloaded 402 KB
+
+package ‘zoo’ successfully unpacked and MD5 sums checked
+package ‘lmtest’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\SJY\AppData\Local\Temp\RtmpK6HvOv\downloaded_packages
+> library(lmtest)
+필요한 패키지를 로딩중입니다: zoo
+
+다음의 패키지를 부착합니다: ‘zoo’
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+> dwtest(standardTest ~ newTest, data=dat)
+
+	Durbin-Watson test
+
+data:  standardTest ~ newTest
+DW = 2.0884, p-value = 0.4074
+alternative hypothesis: true autocorrelation is greater than 0

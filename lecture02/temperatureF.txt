@@ -1,0 +1,9 @@
+area	temperature	temperature.F
+seoul	7.2	44.96
+incheon	8	46.4
+suwon	5.4	41.72
+daejeon	6.8	44.24
+kwangju	8.2	46.76
+daegu	8.5	47.3
+busan	7.5	45.5
+jaeju	9.5	49.1

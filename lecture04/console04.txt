@@ -1,0 +1,349 @@
+ # Chi-Square Test (적합성검정)
+> chisq.test(c(24,16), p=c(0.7,0.3))
+
+	Chi-squared test for given probabilities
+
+data:  c(24, 16)
+X-squared = 1.9048, df = 1, p-value = 0.1675
+
+> rownames(countTable) <-("Placebo", "Aspirin")
+Error: unexpected ',' in "rownames(countTable) <-("Placebo","
+> rownames(countTable) <- c("Placebo", "Aspirin")
+Error in rownames(countTable) <- c("Placebo", "Aspirin") : 
+  object 'countTable' not found
+> # (독립성검정) 두 변수가 독립인지 검정
+> countTable <- matrix( c(10845, 180, 10933, 104), nrow=2, byrow=TRUE)
+> rownames(countTable) <- c("Placebo", "Aspirin")
+> colnames(countTable) <- c("No Heart Attack", "Heart Attack")
+> countTable
+        No Heart Attack Heart Attack
+Placebo           10845          180
+Aspirin           10933          104
+> chisq.test(countTable)
+
+	Pearson's Chi-squared test with Yates' continuity correction
+
+data:  countTable
+X-squared = 20.147, df = 1, p-value = 7.17e-06
+
+> library(MASS)
+> head(birthwt)
+   low age lwt race smoke ptl ht ui ftv  bwt
+85   0  19 182    2     0   0  0  1   0 2523
+86   0  33 155    3     0   0  0  0   3 2551
+87   0  20 105    1     1   0  0  0   1 2557
+88   0  21 108    1     1   0  0  1   2 2594
+89   0  18 107    1     1   0  0  1   0 2600
+91   0  21 124    3     0   0  0  0   0 2622
+> birthwt$smoke <- factor(birthwt$smoke, labels = c("Non Smoker", "Smoker"))
+> birthwt$low <- factor( birthwt$low, label=c("No", "Yes"))
+> smoke_low_tb <- table( birthwt$smoke, birthwt$low)
+> smoke_low_tb
+            
+             No Yes
+  Non Smoker 86  29
+  Smoker     44  30
+> chisq.test(smoke_low_tb)
+
+	Pearson's Chi-squared test with Yates' continuity correction
+
+data:  smoke_low_tb
+X-squared = 4.2359, df = 1, p-value = 0.03958
+
+> # Cocran-Armitage Tend Test
+> prop.trend.test( c(13,7,21), c(42,14,28))
+
+	Chi-squared Test for Trend in Proportions
+
+data:  c(13, 7, 21) out of c(42, 14, 28) ,
+ using scores: 1 2 3
+X-squared = 13.014, df = 1, p-value = 0.0003092
+
+> chisq.test(matrix(c(13, 29, 10, 4, 10, 18), bcol=3))
+Error in matrix(c(13, 29, 10, 4, 10, 18), bcol = 3) : 
+  unused argument (bcol = 3)
+> chisq.test(matrix(c(13, 29, 10, 4, 10, 18), ncol=3))
+
+	Pearson's Chi-squared test
+
+data:  matrix(c(13, 29, 10, 4, 10, 18), ncol = 3)
+X-squared = 7.4367, df = 2, p-value = 0.02427
+
+> # McNemar's Test
+> mcnemar.test(matrix(c(5,15,5,7), ncol=2))
+
+	McNemar's Chi-squared test with continuity correction
+
+data:  matrix(c(5, 15, 5, 7), ncol = 2)
+McNemar's chi-squared = 4.05, df = 1, p-value = 0.04417
+
+> # CrossTable()함수
+> install.packages("gmodels")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+‘C:/Users/SJY/Documents/R/win-library/4.1’의 위치에 패키지(들)을 설치합니다.
+(왜냐하면 ‘lib’가 지정되지 않았기 때문입니다)
+‘gtools’, ‘gdata’(들)을 또한 설치합니다.
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/gtools_3.9.2.zip'
+Content type 'application/zip' length 366932 bytes (358 KB)
+downloaded 358 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/gdata_2.18.0.zip'
+Content type 'application/zip' length 1263240 bytes (1.2 MB)
+downloaded 1.2 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.1/gmodels_2.18.1.zip'
+Content type 'application/zip' length 114065 bytes (111 KB)
+downloaded 111 KB
+
+package ‘gtools’ successfully unpacked and MD5 sums checked
+package ‘gdata’ successfully unpacked and MD5 sums checked
+package ‘gmodels’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\SJY\AppData\Local\Temp\RtmpK6HvOv\downloaded_packages
+> library(gmodels)
+> CrossTable(countTable, fisher = TRUE, chisq = TRUE, mcnemar = TRUE, expected = TRUE, sresid = TRUE, format=SPSS)
+Error in match.arg(format) : object 'SPSS' not found
+> CrossTable(countTable, fisher = TRUE, chisq = TRUE, mcnemar = TRUE, expected = TRUE, sresid = TRUE, format="SPSS")
+
+   Cell Contents
+|-------------------------|
+|                   Count |
+|         Expected Values |
+| Chi-square contribution |
+|             Row Percent |
+|          Column Percent |
+|           Total Percent |
+|            Std Residual |
+|-------------------------|
+
+Total Observations in Table:  22062 
+
+             |  
+             | No Heart Attack  |    Heart Attack  |       Row Total | 
+-------------|-----------------|-----------------|-----------------|
+     Placebo |          10845  |            180  |          11025  | 
+             |      10883.077  |        141.923  |                 | 
+             |          0.133  |         10.216  |                 | 
+             |         98.367% |          1.633% |         49.973% | 
+             |         49.798% |         63.380% |                 | 
+             |         49.157% |          0.816% |                 | 
+             |         -0.365  |          3.196  |                 | 
+-------------|-----------------|-----------------|-----------------|
+     Aspirin |          10933  |            104  |          11037  | 
+             |      10894.923  |        142.077  |                 | 
+             |          0.133  |         10.205  |                 | 
+             |         99.058% |          0.942% |         50.027% | 
+             |         50.202% |         36.620% |                 | 
+             |         49.556% |          0.471% |                 | 
+             |          0.365  |         -3.195  |                 | 
+-------------|-----------------|-----------------|-----------------|
+Column Total |          21778  |            284  |          22062  | 
+             |         98.713% |          1.287% |                 | 
+-------------|-----------------|-----------------|-----------------|
+
+ 
+Statistics for All Table Factors
+
+
+Pearson's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  20.6871     d.f. =  1     p =  5.407924e-06 
+
+Pearson's Chi-squared test with Yates' continuity correction 
+------------------------------------------------------------
+Chi^2 =  20.14737     d.f. =  1     p =  7.169878e-06 
+
+ 
+McNemar's Chi-squared test 
+------------------------------------------------------------
+Chi^2 =  10404.66     d.f. =  1     p =  0 
+
+McNemar's Chi-squared test with continuity correction 
+------------------------------------------------------------
+Chi^2 =  10402.73     d.f. =  1     p =  0 
+
+ 
+Fisher's Exact Test for Count Data
+------------------------------------------------------------
+Sample estimate odds ratio:  0.5731453 
+
+Alternative hypothesis: true odds ratio is not equal to 1
+p =  5.13496e-06 
+95% confidence interval:  0.4451255 0.7347996 
+
+Alternative hypothesis: true odds ratio is less than 1
+p =  3.186954e-06 
+95% confidence interval:  0 0.7071675 
+
+Alternative hypothesis: true odds ratio is greater than 1
+p =  0.9999982 
+95% confidence interval:  0.463237 Inf 
+
+
+ 
+       Minimum expected frequency: 141.9228 
+
+> # fisher test
+> Cocran-Armitage Tend Test
+Error: unexpected symbol in "Cocran-Armitage Tend"
+> # fisher test
+> TeaTasting <- matrix( c(3, 1, 1, 3), nrow=2 )
+> TeaTasting
+     [,1] [,2]
+[1,]    3    1
+[2,]    1    3
+> fisher.test( TeaTasting )
+
+	Fisher's Exact Test for Count Data
+
+data:  TeaTasting
+p-value = 0.4857
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+   0.2117329 621.9337505
+sample estimates:
+odds ratio 
+  6.408309 
+
+> # ANOVA Test
+> # 3개 이상 다수의 집단을 비교하고자 할 떄
+> attach(anorexia)
+> Change <- Postwt - Prewt
+> boxplot( Change ~ Treat, col=rainbow(3))
+> aov.out <- aov( Change ~ Treat )
+> summary(aov.out)
+            Df Sum Sq Mean Sq F value Pr(>F)   
+Treat        2    615  307.32   5.422 0.0065 **
+Residuals   69   3911   56.68                  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> boxplot( Change ~ Treat, col=rainbow(3))
+> # 사후검정
+> # 3 집단간에 어떤 집단의 모평균이 차이가 나는지 알기 위해서 다중비교
+> TukeyHSD( aov.out )
+  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = Change ~ Treat)
+
+$Treat
+              diff       lwr       upr     p adj
+Cont-CBT -3.456897 -8.327276  1.413483 0.2124428
+FT-CBT    4.257809 -1.250554  9.766173 0.1607461
+FT-Cont   7.714706  2.090124 13.339288 0.0045127
+
+> # 2집단간 pairwise 하게 비교하는 결과가 나옴
+> # FT-Cont p = 0.0045127 유의한것을 알수 있음
+> plot(TukeyHSD(aov.out))
+> pairwise.t.test( Change, Treat)
+
+	Pairwise comparisons using t tests with pooled SD 
+
+data:  Change and Treat 
+
+     CBT    Cont  
+Cont 0.1368 -     
+FT   0.1368 0.0048
+
+P value adjustment method: holm 
+> getwd()
+[1] "C:/Users/SJY/Documents"
+> teaching_time <- read.table("/lecture03/teaching_time.txt", header = TRUE, sep=" ")
+Error in file(file, "rt") : cannot open the connection
+In addition: Warning message:
+In file(file, "rt") :
+  cannot open file '/lecture03/teaching_time.txt': No such file or directory
+> teaching_time <- read.table("/lecture04/teaching_time.txt", header = TRUE, sep=" ")
+Error in file(file, "rt") : cannot open the connection
+In addition: Warning message:
+In file(file, "rt") :
+  cannot open file '/lecture04/teaching_time.txt': No such file or directory
+> teaching_time <- read.table("lecture04/teaching_time.txt", header = TRUE, sep=" ")
+Error in file(file, "rt") : cannot open the connection
+In addition: Warning message:
+In file(file, "rt") :
+  cannot open file 'lecture04/teaching_time.txt': No such file or directory
+> getwd()
+[1] "C:/Users/SJY/Documents"
+> setwd("C:\Users\SJY\Documents\유전체 분석과정\lecture04")
+Error: '\U' used without hex digits in character string starting ""C:\U"
+> setwd("/Users/SJY/Documents/유전체 분석과정/lecture04")
+> getwd()
+[1] "C:/Users/SJY/Documents/유전체 분석과정/lecture04"
+> teaching_time <- read.table("/teaching_time.txt", header = TRUE, sep=" ")
+Error in file(file, "rt") : cannot open the connection
+In addition: Warning message:
+In file(file, "rt") :
+  cannot open file '/teaching_time.txt': No such file or directory
+> teaching_time <- read.table("teaching_time.txt", header = TRUE, sep=" ")
+> teaching_time
+   ageGroup method days
+1       <20      A    7
+2       <20      B    9
+3       <20      C   10
+4     20-29      A    8
+5     20-29      B    9
+6     20-29      C   10
+7     30-39      A    9
+8     30-39      B    9
+9     30-39      C   12
+10    40-49      A   10
+11    40-49      B    9
+12    40-49      C   12
+13      >50      A   11
+14      >50      B   12
+15      >50      C   14
+> head(teaching_time)
+  ageGroup method days
+1      <20      A    7
+2      <20      B    9
+3      <20      C   10
+4    20-29      A    8
+5    20-29      B    9
+6    20-29      C   10
+> #반복이 없는 이원분산분석 ( two-way ANOVA )
+> aov.out <- aov(days ~ ageGroup + method, data=teaching_time)
+> summary(aov.out)
+            Df Sum Sq Mean Sq F value   Pr(>F)    
+ageGroup     4 24.933   6.233   14.38 0.001002 ** 
+method       2 18.533   9.267   21.39 0.000617 ***
+Residuals    8  3.467   0.433                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> # 반복이 있는 이원분산분석
+> summary(ToothGrowth)
+      len        supp         dose      
+ Min.   : 4.20   OJ:30   Min.   :0.500  
+ 1st Qu.:13.07   VC:30   1st Qu.:0.500  
+ Median :19.25           Median :1.000  
+ Mean   :18.81           Mean   :1.167  
+ 3rd Qu.:25.27           3rd Qu.:2.000  
+ Max.   :33.90           Max.   :2.000  
+> ToothGrowth$dose <- factor(ToothGrowth$dose)
+> 
+> ToothGrowth$dose <- factor(ToothGrowth$dose)
+> summary(ToothGrowth)
+      len        supp     dose   
+ Min.   : 4.20   OJ:30   0.5:20  
+ 1st Qu.:13.07   VC:30   1  :20  
+ Median :19.25           2  :20  
+ Mean   :18.81                   
+ 3rd Qu.:25.27                   
+ Max.   :33.90                   
+> aov.out <- aov( len ~ supp*dose, data=ToothGrowth )
+> 
+> summary(aov.out)
+            Df Sum Sq Mean Sq F value   Pr(>F)    
+supp         1  205.4   205.4  15.572 0.000231 ***
+dose         2 2426.4  1213.2  92.000  < 2e-16 ***
+supp:dose    2  108.3    54.2   4.107 0.021860 *  
+Residuals   54  712.1    13.2                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> # 교호작용
+> interaction.plot(ToothGrowth$dose, ToothGrowth$supp, ToothGrowth$len)
+> 
