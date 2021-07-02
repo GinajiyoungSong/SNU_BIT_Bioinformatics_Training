@@ -1,0 +1,100 @@
+### package installation ###
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install()
+install.packages("fansi")          # dependencies
+install.packages("tidytree")          # dependencies
+BiocManager::install(c("TCGAbiolinks", "ReactomePA", "mygene", "org.Hs.eg.db", "clusterProfiler", "pathfindR", "EDASeq", "edgeR"), force = TRUE)
+install.packages(c("tibble", "rlang"))
+
+### package loading ###
+library(TCGAbiolinks)
+library(ReactomePA)
+library(mygene)
+library(org.Hs.eg.db)
+library(clusterProfiler)
+library(pathfindR)
+library(tibble)
+library(rlang)
+
+### data ###
+head(dataBRCA)
+tail(dataBRCA)
+dim(dataBRCA)
+str(dataBRCA)
+
+### normalization of genes ###
+d_nor <- TCGAanalyze_Normalization(tabDF = dataBRCA, geneInfo =  geneInfo)
+head(d_nor)
+
+### quantile filtering of genes ###
+qf <- TCGAanalyze_Filtering(tabDF = d_nor, method = "quantile", qnt.cut = 0.25)
+head(qf)
+
+### patient grouping ###
+### selection of normal samples "NT" ###
+pat_normal <- TCGAquery_SampleTypes(barcode = colnames(qf), typesample = c("NT"))
+### selection of tumor samples "TP" ###
+pat_tumor <- TCGAquery_SampleTypes(barcode = colnames(qf), typesample = c("TP"))
+
+### Differential Expression Analysis (DEA) ###
+dataDEG <- TCGAanalyze_DEA(mat1 = qf[,pat_normal], mat2 = qf[,pat_tumor], Cond1type = "Normal", Cond2type = "Tumor", fdr.cut = 0.01, logFC.cut = 1, method = "glmLRT")
+head(dataDEG)
+
+### DEG table with expression values in normal and tumor samples ###
+dataDEGsFiltLevel <- TCGAanalyze_LevelTab(dataDEG, "Tumor", "Normal", qf[,pat_tumor], qf[,pat_normal])
+head(dataDEGsFiltLevel)
+
+### 통계적으로 유의한 상위 10개 유전자 추출 ###
+head(dataDEGsFiltLevel[order(dataDEGsFiltLevel$FDR),], 10)
+genelist <- head(dataDEGsFiltLevel[order(dataDEGsFiltLevel$FDR),], 10)[,1]
+
+### gene symbol conversion ###
+### gene list ###
+genelist <- as.vector(genelist)
+### conversion from hgnc to entrez ###
+a_gene <- queryMany(genelist, scopes="symbol", fields="entrezgene", species="human")
+a_gene
+### 변환된 entrez gene id 추출 ###
+sig_gene <- a_gene$entrezgene
+
+### pathway enrichment test ###
+enrich_result <- enrichPathway(gene = sig_gene, pvalueCutoff = 0.05, readable = T)
+enrich_result
+head(as.data.frame(enrich_result))
+
+### pathway visualization ###
+### bar graph ###
+barplot(enrich_result, showCategory = 5)
+### dot graph ###
+dotplot(enrich_result, showCategory = 5)
+
+### gene cluster analysis ###
+### import data ###
+require(clusterProfiler)
+data(gcSample)
+str(gcSample)
+### cluster 비교 및 visualization ###
+res <- compareCluster(gcSample, fun = "enrichPathway")
+dotplot(res)
+### GSEA ###
+data(geneList, package = "DOSE")
+gs_enrich_result <- gsePathway(geneList, minGSSize = 120, eps = 0, pvalueCutoff = 0.2, pAdjustMethod = "BH", verbose = FALSE)
+gs_enrich_result <- as.data.frame(gs_enrich_result)
+head(gs_enrich_result)
+
+### cluster visualization ###
+data("RA_output")
+RA_clustered <- cluster_enriched_terms(RA_output)
+### 데이터 프레임을 2줄만 정렬하여 출력 ###
+knitr::kable(head(RA_clustered, 2))
+### Status컬럼의 이름이 Representative인 것만 출력 ###
+knitr::kable(RA_clustered[RA_clustered$Status == "Representative", ])
+### heatmap 그리기 (kappa값을 이용) ###
+RA_clustered <- cluster_enriched_terms(RA_output, plot_hmap = TRUE, plot_dend = FALSE, plot_clusters_graph = FALSE)
+### 개별 클러스터의 dendrogram 확인 ###
+RA_clustered <- cluster_enriched_terms(RA_output, plot_dend = TRUE, plot_clusters_graph = FALSE)
+### agglomeration method를 average가 아닌 centroid로 바꾸기 ###
+RA_clustered <- cluster_enriched_terms(RA_output, hclu_method = "centroid")
+### agglomeration method를 fuzzy로 바꾸기 ###
+RA_clustered <- cluster_enriched_terms(RA_output, method = "fuzzy")
